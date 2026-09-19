@@ -5,10 +5,11 @@
   const OUTPUT_HEIGHT = 1920;
   const JPEG_QUALITY = 0.92;
   const FRAME_PATH = "assets/frame-certificate-1a.png";
-  // CSSのライブプレビューと同じ比率。上端は上方向へ広げつつ、写真幅は従来値に戻す。
-  const PHOTO_WINDOW = Object.freeze({ x: 124, y: 403, width: 832, height: 1018 });
-  // 上端中央を高く、左右を少し下げる証明写真風アーチの深さ。
-  const PHOTO_ARCH_DEPTH = 52;
+  // 添付赤枠に合わせた細長い写真領域（CSSの9:16ステージと同じ比率）。
+  const PHOTO_WINDOW = Object.freeze({ x: 200, y: 280, width: 680, height: 1320 });
+  // CSSのborder-radiusと同じ、左右上角の楕円（横18%、縦7%）。
+  const PHOTO_CORNER_RADIUS_X = 122;
+  const PHOTO_CORNER_RADIUS_Y = 92;
 
   const elements = {
     browserHint: document.querySelector("#browserHint"),
@@ -238,11 +239,30 @@
     context.save();
     context.translate(PHOTO_WINDOW.x, PHOTO_WINDOW.y);
     context.beginPath();
-    context.moveTo(0, PHOTO_ARCH_DEPTH);
-    context.quadraticCurveTo(0, 0, PHOTO_WINDOW.width / 2, 0);
-    context.quadraticCurveTo(PHOTO_WINDOW.width, 0, PHOTO_WINDOW.width, PHOTO_ARCH_DEPTH);
+    context.moveTo(PHOTO_CORNER_RADIUS_X, 0);
+    context.lineTo(PHOTO_WINDOW.width - PHOTO_CORNER_RADIUS_X, 0);
+    context.ellipse(
+      PHOTO_WINDOW.width - PHOTO_CORNER_RADIUS_X,
+      PHOTO_CORNER_RADIUS_Y,
+      PHOTO_CORNER_RADIUS_X,
+      PHOTO_CORNER_RADIUS_Y,
+      0,
+      -Math.PI / 2,
+      0
+    );
     context.lineTo(PHOTO_WINDOW.width, PHOTO_WINDOW.height);
     context.lineTo(0, PHOTO_WINDOW.height);
+    context.lineTo(0, PHOTO_CORNER_RADIUS_Y);
+    context.ellipse(
+      PHOTO_CORNER_RADIUS_X,
+      PHOTO_CORNER_RADIUS_Y,
+      PHOTO_CORNER_RADIUS_X,
+      PHOTO_CORNER_RADIUS_Y,
+      0,
+      Math.PI,
+      1.5 * Math.PI,
+      false
+    );
     context.closePath();
     context.clip();
     if (mirror) {
