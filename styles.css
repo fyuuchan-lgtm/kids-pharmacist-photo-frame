@@ -320,11 +320,12 @@ summary:focus-visible {
   position: absolute;
   z-index: 1;
   top: 21%;
-  left: 7.5%;
-  width: 85%;
-  height: 59%;
+  left: 11.5%;
+  width: 77%;
+  height: 53%;
   object-fit: cover;
-  border-radius: 2.5%;
+  /* 中央が高く、左右へゆるく下がる証明写真風アーチ。 */
+  border-radius: 50% 50% 0 0 / 5.1% 5.1% 0 0;
   box-shadow: 0 0 0 2px rgba(18, 82, 139, 0.12);
 }
 
