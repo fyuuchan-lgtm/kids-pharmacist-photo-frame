@@ -5,7 +5,8 @@
   const OUTPUT_HEIGHT = 1920;
   const JPEG_QUALITY = 0.92;
   const FRAME_PATH = "assets/frame-certificate-1a.png";
-  const PHOTO_WINDOW = Object.freeze({ x: 124, y: 518, width: 832, height: 1018 });
+  // CSSのライブプレビューと同じ比率。上部の余白を減らし、写真を上方向へ広げる。
+  const PHOTO_WINDOW = Object.freeze({ x: 81, y: 403, width: 918, height: 1133 });
 
   const elements = {
     browserHint: document.querySelector("#browserHint"),
@@ -39,7 +40,8 @@
 
   const state = {
     stream: null,
-    facingMode: "user",
+    // 親が子どもを撮る運用を前提に、初期値は背面カメラ。
+    facingMode: "environment",
     frameImage: null,
     resultBlob: null,
     resultUrl: "",
@@ -293,8 +295,14 @@
     context.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
-    context.drawImage(frame, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     drawCoverInPhotoWindow(context, source, width, height, mirror);
+
+    // 写真を背面に置き、白い中央部はmultiplyで写真を見せる。
+    // これにより、フレームの文字・枠・乳鉢・クリップボード等の装飾を前面に残す。
+    context.save();
+    context.globalCompositeOperation = "multiply";
+    context.drawImage(frame, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+    context.restore();
 
     let blob = await canvasToBlob("image/jpeg", JPEG_QUALITY);
     let extension = "jpg";
@@ -444,8 +452,8 @@
     stopCamera();
     revokeResult();
     resetCameraMessages();
-    state.facingMode = "user";
-    elements.cameraStage.classList.add("is-front");
+    state.facingMode = "environment";
+    elements.cameraStage.classList.remove("is-front");
     elements.resultStatus.textContent = "";
     elements.iosSaveHint.hidden = true;
     showView(elements.startView);
@@ -488,7 +496,7 @@
 
   function init() {
     elements.browserHint.hidden = !isLikelyInAppBrowser();
-    elements.cameraStage.classList.add("is-front");
+    elements.cameraStage.classList.remove("is-front");
     bindEvents();
     ensureFrameLoaded().catch(() => {
       elements.startCameraButton.disabled = true;
