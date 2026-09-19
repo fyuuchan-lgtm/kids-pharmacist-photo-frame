@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="description" content="調剤体験の記念写真をスマートフォンの中だけで作成できるフォトフレームです。">
+    <title>ちびっこ薬剤師 認定フォト</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="site-header">
+        <p class="eyebrow">病院祭・調剤体験</p>
+        <h1>ちびっこ薬剤師<br><span>認定フォト</span></h1>
+      </header>
+
+      <aside id="browserHint" class="notice notice--warning" hidden>
+        <strong>カメラが開かないとき</strong>
+        <p>このページをSafariまたはChromeで開いてください。写真から選ぶ方法も使えます。</p>
+      </aside>
+
+      <section id="startView" class="view card" aria-labelledby="startTitle">
+        <div class="hero-badge" aria-hidden="true">✓</div>
+        <h2 id="startTitle" tabindex="-1">調剤体験ミッション、クリア！</h2>
+        <p class="lead">フレームといっしょに記念写真を撮ろう。</p>
+
+        <ol class="steps" aria-label="使い方">
+          <li><span>1</span>カメラをはじめる</li>
+          <li><span>2</span>フレームに合わせて撮る</li>
+          <li><span>3</span>写真を保存する</li>
+        </ol>
+
+        <div class="action-stack">
+          <button id="startCameraButton" class="button button--primary" type="button">カメラをはじめる</button>
+          <button class="button button--secondary js-choose-photo" type="button">写真から選ぶ</button>
+        </div>
+
+        <p class="permission-note">カメラの使用を「許可」してください。</p>
+        <details class="privacy">
+          <summary>写真の取り扱いについて</summary>
+          <p>写真はこのスマートフォンの中だけで作成されます。このページが写真を自動送信・自動保存することはありません。撮影後に「写真を保存」を押した場合だけ、端末へ保存されます。ページを閉じる、または再読み込みすると、このページ内の写真は消去されます。保存は、ご本人または保護者の方が操作してください。</p>
+        </details>
+      </section>
+
+      <section id="cameraView" class="view" aria-labelledby="cameraTitle" hidden>
+        <h2 id="cameraTitle" class="sr-only" tabindex="-1">写真を撮る</h2>
+        <div id="cameraStage" class="camera-stage">
+          <img class="frame-base" src="assets/frame-certificate-1a.png" alt="" aria-hidden="true">
+          <video id="cameraVideo" autoplay muted playsinline aria-label="カメラの映像"></video>
+          <div class="camera-guide" aria-hidden="true">ここに顔を合わせてね</div>
+          <div id="countdownOverlay" class="countdown-overlay" role="status" aria-live="assertive" hidden></div>
+        </div>
+
+        <p id="cameraStatus" class="status" role="status">カメラを準備しています…</p>
+        <div id="cameraError" class="notice notice--error" role="alert" hidden>
+          <strong>カメラを使えませんでした</strong>
+          <p id="cameraErrorMessage">ブラウザの設定でカメラを許可するか、「写真から選ぶ」をお使いください。</p>
+        </div>
+
+        <div class="capture-controls">
+          <button id="captureButton" class="shutter" type="button" aria-label="写真を撮る" disabled>
+            <span aria-hidden="true"></span>
+          </button>
+          <p>写真を撮る</p>
+        </div>
+
+        <div class="button-grid">
+          <button id="switchCameraButton" class="button button--secondary button--compact" type="button" disabled>カメラ切替</button>
+          <button class="button button--secondary button--compact js-choose-photo" type="button">写真から選ぶ</button>
+        </div>
+        <button id="retryCameraButton" class="button button--text" type="button" hidden>カメラをもう一度ためす</button>
+        <button id="backToStartButton" class="button button--text" type="button">最初にもどる</button>
+      </section>
+
+      <section id="resultView" class="view" aria-labelledby="resultTitle" hidden>
+        <h2 id="resultTitle" tabindex="-1">この写真でいいですか？</h2>
+        <div class="result-stage">
+          <img id="resultImage" alt="フレームを合成した記念写真">
+        </div>
+        <p id="resultStatus" class="status" role="status"></p>
+        <div class="action-stack">
+          <button id="saveButton" class="button button--primary" type="button">写真を保存</button>
+          <button id="retakeButton" class="button button--secondary" type="button">撮り直す</button>
+        </div>
+        <p id="iosSaveHint" class="notice notice--info" hidden>保存できない場合は、上の写真を長押しして「写真に保存」を選んでください。</p>
+        <button id="finishButton" class="button button--text" type="button">終了</button>
+      </section>
+
+      <section id="doneView" class="view card card--center" aria-labelledby="doneTitle" hidden>
+        <div class="hero-badge hero-badge--done" aria-hidden="true">★</div>
+        <h2 id="doneTitle" tabindex="-1">ご参加ありがとうございました！</h2>
+        <p>写真を保存できたか、保護者の方と確認してください。</p>
+        <button id="restartButton" class="button button--primary" type="button">最初にもどる</button>
+      </section>
+
+      <input id="photoInput" type="file" accept="image/*" hidden>
+      <canvas id="composeCanvas" width="1080" height="1920" hidden></canvas>
+
+      <footer>
+        <p>写真は自動で送信・保存されません</p>
+      </footer>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
