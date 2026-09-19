@@ -5,8 +5,10 @@
   const OUTPUT_HEIGHT = 1920;
   const JPEG_QUALITY = 0.92;
   const FRAME_PATH = "assets/frame-certificate-1a.png";
-  // CSSのライブプレビューと同じ比率。上部の余白を減らし、写真を上方向へ広げる。
-  const PHOTO_WINDOW = Object.freeze({ x: 81, y: 403, width: 918, height: 1133 });
+  // CSSのライブプレビューと同じ比率。上端は上方向へ広げつつ、写真幅は従来値に戻す。
+  const PHOTO_WINDOW = Object.freeze({ x: 124, y: 403, width: 832, height: 1018 });
+  // 上端中央を高く、左右を少し下げる証明写真風アーチの深さ。
+  const PHOTO_ARCH_DEPTH = 52;
 
   const elements = {
     browserHint: document.querySelector("#browserHint"),
@@ -236,7 +238,12 @@
     context.save();
     context.translate(PHOTO_WINDOW.x, PHOTO_WINDOW.y);
     context.beginPath();
-    context.rect(0, 0, PHOTO_WINDOW.width, PHOTO_WINDOW.height);
+    context.moveTo(0, PHOTO_ARCH_DEPTH);
+    context.quadraticCurveTo(0, 0, PHOTO_WINDOW.width / 2, 0);
+    context.quadraticCurveTo(PHOTO_WINDOW.width, 0, PHOTO_WINDOW.width, PHOTO_ARCH_DEPTH);
+    context.lineTo(PHOTO_WINDOW.width, PHOTO_WINDOW.height);
+    context.lineTo(0, PHOTO_WINDOW.height);
+    context.closePath();
     context.clip();
     if (mirror) {
       context.translate(PHOTO_WINDOW.width, 0);
