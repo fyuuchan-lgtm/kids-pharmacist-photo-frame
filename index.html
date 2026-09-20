@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
-    <meta name="description" content="調剤体験の記念写真をスマートフォンの中だけで作成できるフォトフレームです。">
+    <meta name="description" content="3種類から選べる調剤体験の記念写真をスマートフォンの中だけで作成できるフォトフレームです。">
     <title>ちびっこ薬剤師 認定フォト</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260920-3frames">
   </head>
   <body>
     <main class="app-shell">
@@ -25,6 +25,28 @@
         <h2 id="startTitle" tabindex="-1">調剤体験ミッション、クリア！</h2>
         <p class="lead">フレームといっしょに記念写真を撮ろう。</p>
 
+        <fieldset class="frame-picker">
+          <legend>フレームを選んでください</legend>
+          <div class="frame-grid" role="list">
+            <button class="frame-card js-frame-option" type="button" data-frame-id="certificate" aria-pressed="false">
+              <img src="assets/frame-certificate-hospital-v6.webp" alt="1A ちびっこ薬剤師 認定フォトのフレーム">
+              <span class="frame-card__label">1A 認定フォト</span>
+              <span class="frame-card__hint">調剤体験ミッション</span>
+            </button>
+            <button class="frame-card js-frame-option" type="button" data-frame-id="master" aria-pressed="false">
+              <img src="assets/frame-pharmacy-master-2-v7.webp" alt="2 おくすりマスターのフレーム">
+              <span class="frame-card__label">2 おくすりマスター！</span>
+              <span class="frame-card__hint">知多半島総合医療センター</span>
+            </button>
+            <button class="frame-card js-frame-option" type="button" data-frame-id="future" aria-pressed="false">
+              <img src="assets/frame-pharmacy-future-3-v7.webp" alt="3 みらいのやくざいしのフレーム">
+              <span class="frame-card__label">3 みらいのやくざいし！</span>
+              <span class="frame-card__hint">知多半島総合医療センター</span>
+            </button>
+          </div>
+          <p id="frameSelectionStatus" class="frame-selection-status" role="status">フレームを1つ選んでください。</p>
+        </fieldset>
+
         <ol class="steps" aria-label="使い方">
           <li><span>1</span>カメラをはじめる</li>
           <li><span>2</span>フレームに合わせて撮る</li>
@@ -32,8 +54,8 @@
         </ol>
 
         <div class="action-stack">
-          <button id="startCameraButton" class="button button--primary" type="button">カメラをはじめる</button>
-          <button class="button button--secondary js-choose-photo" type="button">写真から選ぶ</button>
+          <button id="startCameraButton" class="button button--primary" type="button" disabled>カメラをはじめる</button>
+          <button class="button button--secondary js-choose-photo" type="button" disabled>写真から選ぶ</button>
         </div>
 
         <p class="permission-note">カメラの使用を「許可」してください。</p>
@@ -45,9 +67,10 @@
 
       <section id="cameraView" class="view" aria-labelledby="cameraTitle" hidden>
         <h2 id="cameraTitle" class="sr-only" tabindex="-1">写真を撮る</h2>
-        <div id="cameraStage" class="camera-stage">
-          <img class="frame-base" src="assets/frame-certificate-1a.png" alt="" aria-hidden="true">
+        <div id="cameraStage" class="camera-stage" data-composite-mode="multiply">
+          <img class="frame-base" src="assets/frame-certificate-hospital-v6.webp" alt="" aria-hidden="true">
           <video id="cameraVideo" autoplay muted playsinline aria-label="カメラの映像"></video>
+          <div id="frameFragments" class="frame-fragments" aria-hidden="true"></div>
           <div class="camera-guide" aria-hidden="true">ここに顔を合わせてね</div>
           <div id="countdownOverlay" class="countdown-overlay" role="status" aria-live="assertive" hidden></div>
         </div>
@@ -75,7 +98,7 @@
 
       <section id="resultView" class="view" aria-labelledby="resultTitle" hidden>
         <h2 id="resultTitle" tabindex="-1">この写真でいいですか？</h2>
-        <div class="result-stage">
+        <div id="resultStage" class="result-stage">
           <img id="resultImage" alt="フレームを合成した記念写真">
         </div>
         <p id="resultStatus" class="status" role="status"></p>
@@ -102,6 +125,6 @@
       </footer>
     </main>
 
-    <script src="app.js" defer></script>
+    <script src="app.js?v=20260920-3frames" defer></script>
   </body>
 </html>
