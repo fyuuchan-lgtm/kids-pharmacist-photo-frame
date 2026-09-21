@@ -3,48 +3,27 @@
 
   const JPEG_QUALITY = 0.92;
   const HOSPITAL_NAME = "知多半島総合医療センター";
+  const OUTPUT_WIDTH = 1080;
+  const OUTPUT_HEIGHT = 1920;
+  const PHOTO_WINDOW = Object.freeze({ x: 200, y: 280, width: 680, height: 1320, radiusX: 122, radiusY: 92, radiusMode: "top" });
   const FRAME_OPTIONS = Object.freeze({
     certificate: Object.freeze({
       id: "certificate",
       label: "1A 認定フォト",
-      path: "assets/frame-certificate-hospital-v6.webp",
-      outputWidth: 1080,
-      outputHeight: 1920,
-      stageAspect: "9 / 16",
-      compositeMode: "multiply",
-      hospitalName: HOSPITAL_NAME,
-      photo: Object.freeze({ x: 200, y: 280, width: 680, height: 1320, radiusX: 122, radiusY: 92, radiusMode: "top" }),
-      foregroundClips: Object.freeze([])
+      path: "assets/frame-certificate-series-1-v14-approved-window.webp",
+      hospitalName: HOSPITAL_NAME
     }),
     master: Object.freeze({
       id: "master",
       label: "2 おくすりマスター！",
-      path: "assets/frame-pharmacy-master-2-v7.webp",
-      outputWidth: 1024,
-      outputHeight: 1536,
-      stageAspect: "2 / 3",
-      compositeMode: "source-over",
-      hospitalName: HOSPITAL_NAME,
-      photo: Object.freeze({ x: 220, y: 275, width: 582, height: 873, radiusX: 66, radiusY: 66, radiusMode: "all" }),
-      foregroundClips: Object.freeze([
-        Object.freeze({ x: 25, y: 820, width: 335, height: 380 }),
-        Object.freeze({ x: 0, y: 1115, width: 1024, height: 421 })
-      ])
+      path: "assets/frame-pharmacy-master-2-v14-approved-window.webp",
+      hospitalName: HOSPITAL_NAME
     }),
     future: Object.freeze({
       id: "future",
       label: "3 みらいのやくざいし！",
-      path: "assets/frame-pharmacy-future-3-v7.webp",
-      outputWidth: 1024,
-      outputHeight: 1536,
-      stageAspect: "2 / 3",
-      compositeMode: "source-over",
-      hospitalName: HOSPITAL_NAME,
-      photo: Object.freeze({ x: 219, y: 305, width: 586, height: 915, radiusX: 66, radiusY: 66, radiusMode: "all" }),
-      foregroundClips: Object.freeze([
-        Object.freeze({ x: 675, y: 945, width: 349, height: 420 }),
-        Object.freeze({ x: 0, y: 1185, width: 1024, height: 351 })
-      ])
+      path: "assets/frame-pharmacy-future-3-v14-approved-window.webp",
+      hospitalName: HOSPITAL_NAME
     })
   });
 
@@ -67,7 +46,6 @@
     cameraStage: document.querySelector("#cameraStage"),
     cameraVideo: document.querySelector("#cameraVideo"),
     frameBase: document.querySelector("#cameraStage .frame-base"),
-    frameFragments: document.querySelector("#frameFragments"),
     cameraStatus: document.querySelector("#cameraStatus"),
     cameraError: document.querySelector("#cameraError"),
     cameraErrorMessage: document.querySelector("#cameraErrorMessage"),
@@ -123,47 +101,24 @@
     return `${(value / total) * 100}%`;
   }
 
-  function photoRadiusCss(frame) {
-    const photo = frame.photo;
+  function photoRadiusCss() {
+    const photo = PHOTO_WINDOW;
     const x = (photo.radiusX / photo.width) * 100;
     const y = (photo.radiusY / photo.height) * 100;
-    return photo.radiusMode === "top" ? `${x}% ${x}% 0 0 / ${y}% ${y}% 0 0` : `${x}% / ${y}%`;
-  }
-
-  function fragmentClipPath(frame, fragment) {
-    const right = frame.outputWidth - fragment.x - fragment.width;
-    const bottom = frame.outputHeight - fragment.y - fragment.height;
-    return `inset(${percent(fragment.y, frame.outputHeight)} ${percent(right, frame.outputWidth)} ${percent(bottom, frame.outputHeight)} ${percent(fragment.x, frame.outputWidth)})`;
-  }
-
-  function renderFrameFragments(frame) {
-    elements.frameFragments.replaceChildren();
-    frame.foregroundClips.forEach((fragment) => {
-      const image = document.createElement("img");
-      image.className = "frame-fragment";
-      image.src = frame.path;
-      image.alt = "";
-      image.setAttribute("aria-hidden", "true");
-      image.style.clipPath = fragmentClipPath(frame, fragment);
-      elements.frameFragments.append(image);
-    });
+    return `${x}% ${x}% 0 0 / ${y}% ${y}% 0 0`;
   }
 
   function applyFrameToStage() {
     const frame = selectedFrame();
     if (!frame) return;
-    const photo = frame.photo;
+    const photo = PHOTO_WINDOW;
     const stage = elements.cameraStage;
-    stage.dataset.compositeMode = frame.compositeMode;
-    stage.style.setProperty("--stage-ratio", frame.stageAspect);
-    stage.style.setProperty("--photo-top", percent(photo.y, frame.outputHeight));
-    stage.style.setProperty("--photo-left", percent(photo.x, frame.outputWidth));
-    stage.style.setProperty("--photo-width", percent(photo.width, frame.outputWidth));
-    stage.style.setProperty("--photo-height", percent(photo.height, frame.outputHeight));
-    stage.style.setProperty("--photo-radius", photoRadiusCss(frame));
+    stage.style.setProperty("--photo-top", percent(photo.y, OUTPUT_HEIGHT));
+    stage.style.setProperty("--photo-left", percent(photo.x, OUTPUT_WIDTH));
+    stage.style.setProperty("--photo-width", percent(photo.width, OUTPUT_WIDTH));
+    stage.style.setProperty("--photo-height", percent(photo.height, OUTPUT_HEIGHT));
+    stage.style.setProperty("--photo-radius", photoRadiusCss());
     elements.frameBase.src = frame.path;
-    renderFrameFragments(frame);
-    elements.resultStage.style.setProperty("--stage-ratio", frame.stageAspect);
   }
 
   function setSelectedFrame(id) {
@@ -316,30 +271,22 @@
     return state.frameLoadPromise;
   }
 
-  function drawPhotoClipPath(context, frame) {
-    const photo = frame.photo;
+  function drawPhotoClipPath(context) {
+    const photo = PHOTO_WINDOW;
     const { width, height, radiusX: rx, radiusY: ry } = photo;
     context.beginPath();
     context.moveTo(rx, 0);
     context.lineTo(width - rx, 0);
     context.ellipse(width - rx, ry, rx, ry, 0, -Math.PI / 2, 0, false);
-    if (photo.radiusMode === "all") {
-      context.lineTo(width, height - ry);
-      context.ellipse(width - rx, height - ry, rx, ry, 0, 0, Math.PI / 2, false);
-      context.lineTo(rx, height);
-      context.ellipse(rx, height - ry, rx, ry, 0, Math.PI / 2, Math.PI, false);
-      context.lineTo(0, ry);
-    } else {
-      context.lineTo(width, height);
-      context.lineTo(0, height);
-      context.lineTo(0, ry);
-    }
+    context.lineTo(width, height);
+    context.lineTo(0, height);
+    context.lineTo(0, ry);
     context.ellipse(rx, ry, rx, ry, 0, Math.PI, 1.5 * Math.PI, false);
     context.closePath();
   }
 
-  function drawCoverInPhotoWindow(context, source, sourceWidth, sourceHeight, frame, mirror = false) {
-    const photo = frame.photo;
+  function drawCoverInPhotoWindow(context, source, sourceWidth, sourceHeight, mirror = false) {
+    const photo = PHOTO_WINDOW;
     const sourceRatio = sourceWidth / sourceHeight;
     const targetRatio = photo.width / photo.height;
     let cropWidth = sourceWidth;
@@ -355,7 +302,7 @@
     }
     context.save();
     context.translate(photo.x, photo.y);
-    drawPhotoClipPath(context, frame);
+    drawPhotoClipPath(context);
     context.clip();
     if (mirror) {
       context.translate(photo.width, 0);
@@ -363,17 +310,6 @@
     }
     context.drawImage(source, cropX, cropY, cropWidth, cropHeight, 0, 0, photo.width, photo.height);
     context.restore();
-  }
-
-  function drawForegroundClips(context, frame, frameImage) {
-    frame.foregroundClips.forEach((fragment) => {
-      context.save();
-      context.beginPath();
-      context.rect(fragment.x, fragment.y, fragment.width, fragment.height);
-      context.clip();
-      context.drawImage(frameImage, 0, 0, frame.outputWidth, frame.outputHeight);
-      context.restore();
-    });
   }
 
   function canvasToBlob(type, quality) {
@@ -403,20 +339,13 @@
     if (!context) throw new Error("写真を作成できませんでした");
     const loadedFrame = await ensureFrameLoaded();
     if (state.selectedFrameId !== frameIdAtStart) throw new Error("フレームが変更されました");
-    elements.canvas.width = frame.outputWidth;
-    elements.canvas.height = frame.outputHeight;
-    context.clearRect(0, 0, frame.outputWidth, frame.outputHeight);
+    elements.canvas.width = OUTPUT_WIDTH;
+    elements.canvas.height = OUTPUT_HEIGHT;
+    context.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, frame.outputWidth, frame.outputHeight);
-    if (frame.compositeMode === "source-over") context.drawImage(loadedFrame, 0, 0, frame.outputWidth, frame.outputHeight);
-    drawCoverInPhotoWindow(context, source, width, height, frame, mirror);
-    if (frame.compositeMode === "multiply") {
-      context.save();
-      context.globalCompositeOperation = "multiply";
-      context.drawImage(loadedFrame, 0, 0, frame.outputWidth, frame.outputHeight);
-      context.restore();
-    }
-    if (frame.foregroundClips.length > 0) drawForegroundClips(context, frame, loadedFrame);
+    context.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+    drawCoverInPhotoWindow(context, source, width, height, mirror);
+    context.drawImage(loadedFrame, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
     let blob = await canvasToBlob("image/jpeg", JPEG_QUALITY);
     let extension = "jpg";
     if (!blob || blob.type !== "image/jpeg") {

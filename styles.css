@@ -178,14 +178,10 @@ p {
 .frame-card img {
   display: block;
   width: 100%;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 9 / 16;
   object-fit: contain;
   background: #f8fffd;
   border-radius: 9px;
-}
-
-.frame-card:first-child img {
-  aspect-ratio: 9 / 16;
 }
 
 .frame-card__label,
@@ -392,28 +388,9 @@ summary:focus-visible {
 }
 
 .frame-base {
-  z-index: 0;
+  z-index: 2;
   object-fit: fill;
   pointer-events: none;
-  mix-blend-mode: normal;
-}
-
-.camera-stage[data-composite-mode="multiply"] .frame-base {
-  z-index: 2;
-  mix-blend-mode: multiply;
-}
-
-.frame-fragments,
-.frame-fragment {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.frame-fragments {
-  z-index: 3;
 }
 
 .camera-stage video {
