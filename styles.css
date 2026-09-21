@@ -184,26 +184,6 @@ p {
   border-radius: 9px;
 }
 
-.frame-card__label,
-.frame-card__hint {
-  display: block;
-  overflow-wrap: anywhere;
-}
-
-.frame-card__label {
-  margin-top: 6px;
-  font-size: clamp(0.68rem, 2.2vw, 0.82rem);
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.frame-card__hint {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 0.65rem;
-  line-height: 1.25;
-}
-
 .frame-card[aria-pressed="true"] {
   border-color: var(--teal-700);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2), 0 6px 0 rgba(15, 118, 110, 0.22);

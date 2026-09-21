@@ -129,7 +129,7 @@
     state.frameLoadPromise = null;
     elements.frameOptions.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.frameId === id)));
     const frame = selectedFrame();
-    elements.frameSelectionStatus.textContent = `${frame.label}を選択中。カメラをはじめるか、写真から選んでください。`;
+    elements.frameSelectionStatus.textContent = "フレームを選択中。カメラをはじめるか、写真から選んでください。";
     elements.startCameraButton.disabled = false;
     elements.choosePhotoButtons.forEach((button) => { button.disabled = false; });
     applyFrameToStage();
